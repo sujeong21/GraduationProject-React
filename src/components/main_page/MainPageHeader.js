@@ -7,14 +7,22 @@ import { MainPageContext } from "../provider/MainPageProvider";
 
 const MainPageHeader = () => {
   const inputRef = useRef();
-  const { searchData, setSearchData, setIsLoading } =
+  const { searchData, setSearchData, setIsLoading, setSearchList, searchList } =
     useContext(MainPageContext);
 
-  // useEffect(() => {
-  //   console.log(searchData);
-  // }, [searchData]);
-
-  function search() {}
+  function search() {
+    axios
+      .get("https://yts.mx/api/v2/list_movies.json", {
+        query_term: searchData,
+      })
+      .then((res) => {
+        setSearchList({
+          movieList: res.data.data.movies,
+          pageNumber: res.data.data.page_number,
+          movieCnt: res.data.data.movie_count,
+        });
+      });
+  }
 
   return (
     <div className="main_page_header_background">
@@ -26,6 +34,7 @@ const MainPageHeader = () => {
             if (e.code === "Enter") {
               setSearchData(inputRef.current.value);
               setIsLoading(false);
+              search();
               if (inputRef.current.value === "") {
                 setIsLoading(true);
               }

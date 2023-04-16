@@ -1,0 +1,130 @@
+.genre_background {
+  width: 100%;
+  padding-left: 110px;
+  padding-right: 110px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 160px);
+}
+
+.loading {
+  overflow: hidden;
+}
+
+.genre_header_background {
+  width: 100%;
+  padding-top: 35px;
+  padding-bottom: 35px;
+  font-size: 20px;
+  color: #000;
+  font-family: "InterBlack";
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.genre_list_background {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 60px;
+}
+
+.genre_item_background {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.reverse {
+  flex-direction: row-reverse;
+}
+
+.genre_cover_background {
+  width: 195px;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.genre_cover_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.genre_skeleton {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+}
+
+.genre_item_description_container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.genre_item_reverse {
+  align-items: flex-end;
+}
+
+.reverse {
+  flex-direction: row-reverse;
+}
+
+.genre_title_text {
+  font-size: 20px;
+  font-family: "InterRegular";
+  color: black;
+  font-weight: 500;
+}
+
+.genre_text_container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.genre_date_text {
+  font-size: 14px;
+  font-family: "InterThin";
+}
+
+.genre_text {
+  font-family: "InterRegular";
+  font-size: 16px;
+  color: black;
+}
+
+.genre_summary_text {
+  font-size: 16px;
+  font-family: "InterRegular";
+  color: black;
+  overflow: auto;
+  height: 180px;
+}
+
+.genre_title_container {
+  display: flex;
+  gap: 25px;
+  flex-direction: column;
+}
+
+.title_reverse {
+  align-items: flex-end;
+}
+
+.genre_summary_reverse {
+  text-align: end;
+}

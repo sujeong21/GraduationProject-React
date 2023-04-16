@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { DEMO_USERS } from '../App';
+import { STORED_USERS } from '../App';
 import '../css/SignUp.css';
 
+// 회원가입 페이지
+// 전반적으로 로그인페이지와 거의 유사하다.
 const SignUp = () => {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -13,12 +15,12 @@ const SignUp = () => {
 
   return (
     <div className='container'>
-      <div className='login_container'>
+      <div className='signup_container'>
         <div style={{ display: 'flex', gap: 25, flexDirection: 'column' }}>
-          <h1 className='login_title'>SIGNUP</h1>
+          <div className='signup_title'>SIGNUP</div>
           <input
             type='text'
-            className='login_input'
+            className='signup_input'
             placeholder='USERNAME'
             value={userId}
             onChange={handleUserId}
@@ -38,7 +40,7 @@ const SignUp = () => {
         </div>
         <div>
           <button
-            className='login_button'
+            className='signup_button'
             type='submit'
             disabled={
               !(
@@ -48,12 +50,12 @@ const SignUp = () => {
               )
             }
             onClick={() => {
-              let demoUsers = JSON.parse(localStorage.getItem(DEMO_USERS));
+              let demoUsers = JSON.parse(localStorage.getItem(STORED_USERS));
 
               demoUsers = Array.isArray(demoUsers)
                 ? [...demoUsers, { userId, userPassword, userEmail }]
                 : [{ userId, userPassword, userEmail }];
-              localStorage.setItem(DEMO_USERS, JSON.stringify(demoUsers));
+              localStorage.setItem(STORED_USERS, JSON.stringify(demoUsers));
 
               alert('회원가입 완료!');
               window.location = '/login';

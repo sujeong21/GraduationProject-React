@@ -1,6 +1,7 @@
 import React from "react";
 import "../../css/Footer.css";
 
+// 웹 전역에 보여지는 Footer.
 const Footer = () => {
   return (
     <div className="footer_background">
