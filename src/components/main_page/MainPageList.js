@@ -1,18 +1,17 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { genres } from "../../App";
 import LeftArrow from "../../img/LeftArrow";
 import RightArrow from "../../img/RightArrow";
 import { MainPageContext } from "../provider/MainPageProvider";
 
-const MainPageList = ({ title, index }) => {
+const MainPageList = ({ title, index, isSearch }) => {
   const [x, setX] = useState(0);
   const [clickCnt, setClickCnt] = useState(1);
 
-  const { movieList, setMovieList } = useContext(MainPageContext);
-
-  useEffect(() => {
-    console.log(movieList);
-  }, []);
+  const { movieList, setMovieList, searchList, setSearchList } =
+    useContext(MainPageContext);
 
   return (
     <div className="list_background">
@@ -68,28 +67,58 @@ const MainPageList = ({ title, index }) => {
             transform: `translateX(${x}px)`,
           }}
         >
-          {movieList &&
-            movieList.length > 0 &&
-            movieList[index].movieList.map((item, idx) => {
-              return (
-                <div className="movie_item" id={idx}>
-                  <img src={item.small_cover_image} className="cover_image" />
-                  <div className="move_item_container">
-                    <div>
-                      {item.title && item.title.length > 20
-                        ? item.title.substring(0, 20) + "..."
-                        : item.title}
-                    </div>
-                    <div className="move_item_date">
+          {isSearch
+            ? searchList &&
+              searchList.movieList &&
+              searchList.movieList.map((item, idx) => {
+                return (
+                  <div className="movie_item" key={idx}>
+                    <img src={item.small_cover_image} className="cover_image" />
+                    <div className="move_item_container">
                       <div>
-                        {item.date_uploaded &&
-                          item.date_uploaded.substring(0, 10)}
+                        {item.title && item.title.length > 20
+                          ? item.title.substring(0, 20) + "..."
+                          : item.title}
+                      </div>
+                      <div className="move_item_date">
+                        <div>
+                          {item.date_uploaded &&
+                            item.date_uploaded.substring(0, 10)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            : movieList &&
+              movieList.length > 0 &&
+              movieList[index].movieList.map((item, idx) => {
+                return (
+                  <div
+                    className="movie_item"
+                    key={idx}
+                    onClick={() => {
+                      console.log("Clicked!", item);
+                      window.location = `/detail/${item.id}`;
+                    }}
+                  >
+                    <img src={item.small_cover_image} className="cover_image" />
+                    <div className="move_item_container">
+                      <div>
+                        {item.title && item.title.length > 20
+                          ? item.title.substring(0, 20) + "..."
+                          : item.title}
+                      </div>
+                      <div className="move_item_date">
+                        <div>
+                          {item.date_uploaded &&
+                            item.date_uploaded.substring(0, 10)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
         </div>
       </div>
     </div>
