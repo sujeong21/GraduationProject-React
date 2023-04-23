@@ -77,12 +77,12 @@ const MainPage = () => {
     }
   }, [movieList]);
 
-  useEffect(() => {
-    // if (searchData === "") {
-    //   setIsLoading(true);
-    // }
+/*   useEffect(() => {
+     if (searchData === "") {
+       setIsLoading(true);
+     }
   }, [searchData]);
-
+ */
   return (
     <MainPageContextProvider
       movieList={movieList}
