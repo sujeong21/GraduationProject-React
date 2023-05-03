@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 
 export const MainPageContext = createContext({
   movieList: [],
@@ -7,6 +7,8 @@ export const MainPageContext = createContext({
   setSearchData: (obj) => {},
   isLoading: false,
   setIsLoading: (obj) => {},
+  searchList: {},
+  setSearchList: (obj) => {},
 });
 
 const MainPageContextProvider = ({
@@ -17,6 +19,8 @@ const MainPageContextProvider = ({
   setSearchData,
   isLoading,
   setIsLoading,
+  searchList,
+  setSearchList,
 }) => {
   return (
     <MainPageContext.Provider
@@ -27,6 +31,8 @@ const MainPageContextProvider = ({
         setSearchData: setSearchData,
         isLoading: isLoading,
         setIsLoading: setIsLoading,
+        searchList: searchList,
+        setSearchList: setSearchList,
       }}
     >
       {children}

@@ -4,9 +4,7 @@ import { genres } from "../App";
 import MainPageHeader from "../components/main_page/MainPageHeader";
 import MainPageList from "../components/main_page/MainPageList";
 import MainPageSkeleton from "../components/main_page/MainPageSkeleton";
-import MainPageContextProvider, {
-  MainPageContext,
-} from "../components/provider/MainPageProvider";
+import MainPageContextProvider from "../components/provider/MainPageProvider";
 import "../css/MainPage.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -14,6 +12,7 @@ const MainPage = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchData, setSearchData] = useState("");
+  const [searchList, setSearchList] = useState();
 
   function setMovies() {
     genres.map((item, index) => {
@@ -35,12 +34,6 @@ const MainPage = () => {
                 movieCnt: res.data.data.movie_count,
               },
             ]);
-            // movies.push({
-            //   movieList: res.data.data.movies,
-            //   pageNumber: res.data.data.page_number,
-            //   movieCnt: res.data.data.movie_count,
-            // });
-            // console.log(movies);
           });
       } else {
         axios
@@ -53,7 +46,6 @@ const MainPage = () => {
             },
           })
           .then((res) => {
-            // console.log(item);
             setMovieList((m) => [
               ...m,
               {
@@ -77,12 +69,15 @@ const MainPage = () => {
     }
   }, [movieList]);
 
-/*   useEffect(() => {
-     if (searchData === "") {
-       setIsLoading(true);
-     }
-  }, [searchData]);
- */
+  useEffect(() => {
+    console.log("=======================");
+    console.log(searchList);
+    console.log("=======================");
+    if (searchList && searchList.movieList) {
+      setIsLoading(true);
+    }
+  }, [searchList]);
+
   return (
     <MainPageContextProvider
       movieList={movieList}
@@ -91,33 +86,42 @@ const MainPage = () => {
       setSearchData={setSearchData}
       isLoading={isLoading}
       setIsLoading={setIsLoading}
+      searchList={searchList}
+      setSearchList={setSearchList}
     >
-      <MainPageHeader />
-      {searchData === "" ? (
-        isLoading ? (
-          genres.map((item, index) => {
-            if (index === 0) {
-              return <MainPageList key={index} title={item} index={index} />;
-            } else {
-              return (
-                <MainPageList
-                  key={index}
-                  title={`장르 - ${item}`}
-                  index={index}
-                />
-              );
-            }
-          })
+      <div className="background_list">
+        <MainPageHeader />
+        {searchData === "" ? (
+          isLoading ? (
+            genres.map((item, index) => {
+              if (index === 0) {
+                return <MainPageList key={index} title={item} index={index} />;
+              } else {
+                return (
+                  <MainPageList
+                    key={index}
+                    title={`장르 - ${item}`}
+                    index={index}
+                    isSearch={false}
+                  />
+                );
+              }
+            })
+          ) : (
+            genres.map((item, index) => {
+              return <MainPageSkeleton key={index} />;
+            })
+          )
         ) : (
-          genres.map((item) => {
-            return <MainPageSkeleton />;
-          })
-        )
-      ) : (
-        <div className="search_page">
-          {isLoading ? <></> : <MainPageSkeleton />}
-        </div>
-      )}
+          <div className="search_page">
+            {isLoading ? (
+              <MainPageList key={0} title={"검색 결과"} isSearch={true} />
+            ) : (
+              <MainPageSkeleton />
+            )}
+          </div>
+        )}
+      </div>
     </MainPageContextProvider>
   );
 };

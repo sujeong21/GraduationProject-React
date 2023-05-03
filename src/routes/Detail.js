@@ -26,14 +26,17 @@ const Detail = () => {
   const [movie, setMovie] = useState("");
   const [isLike, setIsLike] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [comment, setComment] = useState({});
+  const [comment, setComment] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const { id } = useParams();
+  const [changeIndex, setChangeIndex] = useState(null);
+  const [changeText, setChangeText] = useState(null);
   const {
     userObj: { userId },
   } = useContext(GlobalContext);
 
   const handleCommentInput = (e) => setCommentInput(e.target.value);
+  const handleChageText = (e) => setChangeText(e.target.value);
 
   useEffect(() => {
     let likeList = JSON.parse(localStorage.getItem(STORED_USERS) ?? "[]");
@@ -46,10 +49,18 @@ const Detail = () => {
     const storedCommentsObj = JSON.parse(
       localStorage.getItem(STORED_COMMENTS) ?? "[]"
     );
-    const currentComment = storedCommentsObj.find(
-      (item) => item.movieId === id
-    );
+
+    console.log("asdfasdfasdfasdf", storedCommentsObj);
+
+    const currentComment = storedCommentsObj.map((item) => {
+      if (item.movieId === id) {
+        return item;
+      }
+    });
     setComment(currentComment);
+    console.log("=========");
+    console.log(currentComment);
+    console.log("=========");
 
     axios
       .get(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
@@ -84,36 +95,85 @@ const Detail = () => {
       }
     });
   };
-  const onDeleteComment = () => {
+  const onDeleteComment = (commentId) => {
     let storedCommentsObj = JSON.parse(
       localStorage.getItem(STORED_COMMENTS) ?? "[]"
     );
-    const index = storedCommentsObj.findIndex((item) => item.movieId === id);
+    const index = storedCommentsObj.findIndex(
+      (item) => item.commentId === commentId
+    );
 
     storedCommentsObj.splice(index, 1);
     localStorage.setItem(STORED_COMMENTS, JSON.stringify(storedCommentsObj));
-    setComment();
+    let commentList = [...comment];
+    const deleteComment = commentList.map((item) => {
+      if (item && item.commentId && commentId && item.commentId !== commentId) {
+        return item;
+      }
+    });
+    setComment(deleteComment);
   };
+
   const onSaveComment = () => {
     const commentObj = {
       movieId: id,
       userId,
       commentContent: commentInput,
       createdAt: Date.now(),
+      commentId: Math.random(),
     };
-    setComment(commentObj);
+    const comments = [...comment];
+    setComment([...comments, commentObj]);
+
+    console.log("--------");
+    console.log(localStorage.getItem(STORED_COMMENTS));
 
     let storedCommentsObj = JSON.parse(
       localStorage.getItem(STORED_COMMENTS) ?? "[]"
     );
-    const index = storedCommentsObj.findIndex((item) => item.movieId === id);
-
-    storedCommentsObj.splice(index, 1);
+    console.log(...storedCommentsObj);
+    console.log("--------");
     storedCommentsObj = [...storedCommentsObj, commentObj];
+    console.log(storedCommentsObj);
     localStorage.setItem(STORED_COMMENTS, JSON.stringify(storedCommentsObj));
 
     setCommentInput("");
   };
+
+  const onChangeComment = () => {
+    let stored = JSON.parse(localStorage.getItem(STORED_COMMENTS) ?? "[]");
+    console.log(changeText);
+
+    if (changeText !== "") {
+      stored.map((item) => {
+        if (
+          item &&
+          item.commentId &&
+          changeIndex &&
+          item.commentId === changeIndex
+        ) {
+          item.commentContent = changeText;
+        }
+      });
+      localStorage.setItem(STORED_COMMENTS, JSON.stringify(stored));
+      let commentList = [...comment];
+      commentList.map((item) => {
+        if (
+          item &&
+          item.commentId &&
+          changeIndex &&
+          item.commentId === changeIndex
+        ) {
+          item.commentContent = changeText;
+        }
+      });
+      setComment(commentList);
+    }
+
+    setChangeIndex(null);
+    setChangeText("");
+  };
+
   return (
     <div className="container">
       {isLoading ? (
@@ -152,26 +212,60 @@ const Detail = () => {
             </div>
           </div>
 
-          {comment && (
-            <div className="comment_container">
-              <div className="comment_header">
-                <span>{userId}</span>
-                { <Pen
-                  width={17}
-                  style={{ marginRight: '5px', marginLeft: '16px' }}
-                /> }
-                <Trash
-                  onClick={onDeleteComment}
-                  width={17}
-                  style={{ marginTop: "5px" }}
-                />
-              </div>
+          {comment &&
+            comment.map((item, index) => {
+              console.log("asdfasd", item);
+              if (item) {
+                return (
+                  <div className="comment_container" key={index}>
+                    <div className="comment_header">
+                      <span>{item.userId}</span>
+                      <div
+                        onClick={() => {
+                          console.log(item.commentId);
+                          setChangeIndex(item.commentId);
+                        }}
+                      >
+                        <Pen
+                          width={17}
+                          style={{ marginRight: "5px", marginLeft: "16px" }}
+                        />
+                      </div>
+                      <div
+                        onClick={() => {
+                          console.log(item.commentId);
+                          onDeleteComment(item.commentId);
+                        }}
+                      >
+                        <Trash width={17} style={{ marginTop: "5px" }} />
+                      </div>
+                    </div>
 
-              <div className="comment_item">
-                <span>{comment.commentContent}</span>
-              </div>
-            </div>
-          )}
+                    <div className="comment_item">
+                      {item &&
+                      item.commentId &&
+                      item.commentId === changeIndex ? (
+                        <input
+                          type="text"
+                          placeholder={item.commentContent}
+                          value={changeText}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              onChangeComment();
+                            }
+                          }}
+                          onChange={handleChageText}
+                        />
+                      ) : (
+                        <span>{item.commentContent}</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              } else {
+                return <div key={index}></div>;
+              }
+            })}
         </div>
       )}
     </div>
@@ -179,3 +273,12 @@ const Detail = () => {
 };
 
 export default Detail;
+
+// [
+//   {
+//     movieId: "51016",
+//     userId: "hello",
+//     commentContent: "ff",
+//     createdAt: 1682501159665,
+//   },
+// ];

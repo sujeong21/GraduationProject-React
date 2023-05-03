@@ -41,7 +41,17 @@ const MainPageHeader = () => {
             }
           }}
         />
-        <div className="search_button">
+        <div
+          className="search_button"
+          onClick={() => {
+            setSearchData(inputRef.current.value);
+            setIsLoading(false);
+            search();
+            if (inputRef.current.value === "") {
+              setIsLoading(true);
+            }
+          }}
+        >
           <Search />
         </div>
       </div>
